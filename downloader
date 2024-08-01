@@ -1,2 +1,4 @@
 #!/bin/bash
-python ./main.py "$@"
+
+SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
+python "$SCRIPT_DIR/main.py" "$@"
