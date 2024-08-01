@@ -1,0 +1,15 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / build directories
+bin/
+build/
+dist/
+
+# IDE files
+.vscode/
+.idea/
+
+.env
