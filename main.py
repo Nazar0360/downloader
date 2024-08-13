@@ -1,4 +1,4 @@
-from downloader import download
+from downloader import download, audio_formats, video_formats
 import argparse
 import sys
 import ui
@@ -9,9 +9,15 @@ def main() -> None:
     parser.add_argument('urls', nargs='*', help='YouTube links')
     parser.add_argument('-d', '--download-folder', help='download folder')
     parser.add_argument('-a', '--audio_only', action='store_true', help='download only audio')
-    parser.add_argument('--no-metadata', action='store_true', help='don\'t add metadata and cover art to downloaded files')
+    parser.add_argument('--no-metadata', action='store_true', help='don\'t add subtitles, metadata and cover art to downloaded files')
+    parser.add_argument('-f', '--format', help='download format')
     parser.add_argument('--ui', action='store_true', help='run UI instead of command line')
     args = parser.parse_args()
+
+    if args.format is not None and args.audio_only is False:
+        args.audio_only = args.format in audio_formats
+    elif args.format in video_formats:
+        raise ValueError("Cannot use video format with --audio_only")
 
     if len(sys.argv) == 1:
         try:
@@ -40,9 +46,11 @@ def main() -> None:
         app.url_textbox.insert("1.0", '\n'.join(list(urls)) + ('\n' if urls else ''))
         app.audio_only_var.set(args.audio_only)
         app.no_metadata_var.set(args.no_metadata)
+        app.format_var.set(args.format if args.format else "[best]")
         app.window.mainloop()
         return
-    download(args.urls, audio_only=args.audio_only, no_metadata=args.no_metadata, debug=True)
+
+    exit(download(args.urls, audio_only=args.audio_only, no_metadata=args.no_metadata, download_format=args.format, debug=True))
 
 if __name__ == '__main__':
     main()
